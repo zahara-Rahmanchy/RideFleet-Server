@@ -12,3 +12,53 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model User{
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  role userRoles
+  passwordChange Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+enum userRoles{
+  SuperAdmin
+  Admin
+  Renter
+  Driver
+}
+model Vehicles{
+  id String @id @default(uuid())
+  name String
+  category String
+  brand String
+  image String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rent RentalPlan[]
+}
+
+model RentalPlan {
+  id String @id @default(uuid())
+  name rentalPlanName
+  description String
+  vehicleId String
+  prices PricingPlan[]
+  vehicle Vehicles @relation(fields: [vehicleId],references: [id])
+  
+}
+model PricingPlan{
+   id String @id @default(uuid())
+   perDay String
+   perMonth String
+   perWeek String
+   rentalPlanId String
+   rentPlan RentalPlan @relation(fields: [rentalPlanId],references: [id])
+}
+enum rentalPlanName{
+  Student
+  Standard
+  Premium
+  
+}
