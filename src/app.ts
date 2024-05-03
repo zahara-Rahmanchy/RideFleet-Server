@@ -8,6 +8,7 @@ import express, {
 import cors from "cors";
 
 import httpStatus from "http-status";
+import {VehicleRoutes} from "./modules/Vehicles/vehicle.route";
 // import globalErrorHandler from "./middlewares/globalErrorHandler";
 // import router from "./routes";
 
@@ -25,7 +26,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-// app.use("/api", router);
+app.use("/api", VehicleRoutes);
 
 // global error handler middleware used for handling all the errors and providing details
 // app.use(globalErrorHandler);

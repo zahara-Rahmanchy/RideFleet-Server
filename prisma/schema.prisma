@@ -29,7 +29,7 @@ enum userRoles{
 }
 model Vehicles{
   id String @id @default(uuid())
-  name String
+  model String
   category String
   brand String
   image String
@@ -50,9 +50,9 @@ model RentalPlan {
 }
 model PricingPlan{
    id String @id @default(uuid())
-   perDay String
-   perMonth String
-   perWeek String
+   perDay Float
+   perMonth Float
+   perWeek Float
    rentalPlanId String
    rentPlan RentalPlan @relation(fields: [rentalPlanId],references: [id])
 }
