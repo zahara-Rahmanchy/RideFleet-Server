@@ -14,9 +14,12 @@ const insertVehicle = async (req: Request, res: Response) => {
 const getVehicle = async (req: Request, res: Response) => {
   console.log("user controller:", req.body);
 
-  // const result = await VehicleServies.insertVehicleData("hew");
+  // const metaOptions = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await VehicleServies.getVehicleData();
 
-  res.send("Hello from vehicle");
+  res.send({
+    data: result,
+  });
 };
 
 export const VehicleController = {

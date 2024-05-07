@@ -6,17 +6,18 @@ import express, {
   request,
 } from "express";
 import cors from "cors";
-
+import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
-import {VehicleRoutes} from "./modules/Vehicles/vehicle.route";
-// import globalErrorHandler from "./middlewares/globalErrorHandler";
-// import router from "./routes";
+import {VehicleRoutes} from "./app/modules/Vehicles/vehicle.route";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import {AuthRoutes} from "./app/modules/Auth/auth.routes";
 
 const app: Application = express();
 
 app.use(cors());
 
 // parsers
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -26,10 +27,11 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api", VehicleRoutes);
+app.use("/api/v1", VehicleRoutes);
+app.use("/api/v1", AuthRoutes);
 
 // global error handler middleware used for handling all the errors and providing details
-// app.use(globalErrorHandler);
+app.use(globalErrorHandler);
 
 // this one is used for not found route
 app.use((req: Request, res: Response, next: NextFunction) => {

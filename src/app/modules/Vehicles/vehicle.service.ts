@@ -22,18 +22,14 @@ const prisma = new PrismaClient();
 //   ],
 // };
 const insertVehicleData = async (data: any) => {
-  const {rentalPlans, ...vehiclesData} = data;
+  const {rent: rentalPlans, ...vehiclesData} = data;
 
   const rentData = rentalPlans.map((plan: any) => ({
-    name: plan.name,
+    name: plan.name as $Enums.rentalPlanName,
     description: plan.description,
-    prices: {
-      create: {
-        perDay: plan.prices.perDay,
-        perMonth: plan.prices.perMonth,
-        perWeek: plan.prices.perWeek,
-      },
-    },
+    perDay: plan.perDay,
+    perMonth: plan.perMonth,
+    perWeek: plan.perWeek,
   }));
   const result = await prisma.vehicles.create({
     data: {
@@ -51,6 +47,21 @@ const insertVehicleData = async (data: any) => {
   return result;
 };
 
+// TODO: Apply filter and pagination
+const getVehicleData = async () => {
+  const pageCount = 1;
+  const result = await prisma.vehicles.findMany({
+    include: {
+      rent: true,
+    },
+    skip: Number(pageCount - 1) * 9,
+    take: Number(9),
+  });
+
+  console.log("result: ", result);
+  return result;
+};
 export const VehicleServies = {
   insertVehicleData,
+  getVehicleData,
 };
