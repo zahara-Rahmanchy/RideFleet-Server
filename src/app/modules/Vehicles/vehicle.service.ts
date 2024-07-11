@@ -23,7 +23,7 @@ const prisma = new PrismaClient();
 // };
 const insertVehicleData = async (data: any) => {
   const {rent: rentalPlans, ...vehiclesData} = data;
-
+  console.log("rent: ", rentalPlans);
   const rentData = rentalPlans.map((plan: any) => ({
     name: plan.name as $Enums.rentalPlanName,
     description: plan.description,
@@ -48,12 +48,71 @@ const insertVehicleData = async (data: any) => {
 };
 
 // TODO: Apply filter and pagination
-const getVehicleData = async () => {
+const getVehicleData = async (
+  searchTerm: string | null,
+  rentalPlan: any,
+  sortBy: string,
+  sortOrder: string
+) => {
+  console.log("sortBy: ", sortBy, "\nsortOrder: ", sortOrder);
   const pageCount = 1;
+  const allConditionsWithAND: Prisma.VehiclesWhereInput[] = [];
+  if (searchTerm && searchTerm !== null) {
+    allConditionsWithAND.push({
+      OR: [
+        {
+          category: {
+            contains: searchTerm as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          model: {
+            contains: searchTerm as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          brand: {
+            contains: searchTerm as string,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+  // if (rentalPlan && rentalPlan !== null) {
+  // allConditionsWithAND.push({
+  //   rent: {
+  //     some: {
+  //       name: {
+  //         equals: rentalPlan,
+  //       },
+  //     },
+  //   },
+  // });
+  // }
+  const rentWhereClause = rentalPlan
+    ? {
+        name: {
+          equals: rentalPlan,
+        },
+      }
+    : {};
+  const whereConditions: Prisma.VehiclesWhereInput = {
+    AND: allConditionsWithAND,
+  };
   const result = await prisma.vehicles.findMany({
+    where: whereConditions,
     include: {
-      rent: true,
+      rent: {
+        where: rentWhereClause,
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+      },
     },
+
     skip: Number(pageCount - 1) * 9,
     take: Number(9),
   });

@@ -37,7 +37,7 @@ const createRenter = async (
     res.send({
       success: true,
       statusCode: httpStatus.CREATED,
-      message: "User registered successfully",
+      message: "Renter registered successfully",
       data: result,
     });
   } catch (error) {

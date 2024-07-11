@@ -11,6 +11,7 @@ import httpStatus from "http-status";
 import {VehicleRoutes} from "./app/modules/Vehicles/vehicle.route";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import {AuthRoutes} from "./app/modules/Auth/auth.routes";
+import {userRoutes} from "./app/modules/User/user.routes";
 
 const app: Application = express();
 
@@ -29,7 +30,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1", VehicleRoutes);
 app.use("/api/v1", AuthRoutes);
-
+app.use("/api/v1", userRoutes);
 // global error handler middleware used for handling all the errors and providing details
 app.use(globalErrorHandler);
 

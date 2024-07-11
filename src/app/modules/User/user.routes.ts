@@ -1,4 +1,4 @@
-import express from "express";
+import express, {NextFunction} from "express";
 import {userControllers} from "./user.controller";
 // import auth from "../../../middlewares/auth";
 // import validateRequest from "../../../middlewares/validateRequest";
@@ -11,12 +11,14 @@ const router = express.Router();
 post route to create user,herereq body is validated using zod schema and then passed 
 to controller
 */
+
 router.post(
   "/create-admin",
   // validateRequest(userValidationSchema.userValidation),
   userControllers.createAdmin
 );
 
+// customer signup
 router.post(
   "/create-renter",
   // validateRequest(userValidationSchema.userValidation),

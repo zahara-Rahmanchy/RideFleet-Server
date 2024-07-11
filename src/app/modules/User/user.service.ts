@@ -33,22 +33,23 @@ const createAdminService = async (reqData: any) => {
  * create renter
  */
 const createRenterService = async (reqData: any) => {
+  console.log(reqData);
   const hashPassword = await hashedPassword(reqData.password);
   const userData = {
-    name: reqData.admin.name,
-    email: reqData.admin.email,
+    name: reqData.renter.name,
+    email: reqData.renter.email,
     password: hashPassword,
-    role: userRoles.Admin,
+    role: userRoles.Renter,
   };
 
   const result = await prisma.$transaction(async transactionClient => {
     await transactionClient.user.create({
       data: userData,
     });
-    const adminCreated = await transactionClient.admin.create({
-      data: reqData.admin,
+    const renterCreated = await transactionClient.renter.create({
+      data: reqData.renter,
     });
-    return adminCreated;
+    return renterCreated;
   });
   return result;
 };

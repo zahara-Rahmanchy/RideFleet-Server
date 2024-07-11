@@ -13,9 +13,18 @@ const insertVehicle = async (req: Request, res: Response) => {
 
 const getVehicle = async (req: Request, res: Response) => {
   console.log("user controller:", req.body);
+  const searchTerm = req.query.searchTerm ? req.query.searchTerm : "";
+  const rentalPlan = req.query.rentalPlan ? req.query.rentalPlan : "";
+  const sortBy = req.query.sortBy ? req.query.sortBy : "perDay";
+  const sortOrder = req.query.sortOrder ? req.query.sortOrder : "asc";
 
-  // const metaOptions = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const result = await VehicleServies.getVehicleData();
+  console.log("sortBy con: ", sortBy, "\nsortOrder con: ", sortOrder);
+  const result = await VehicleServies.getVehicleData(
+    searchTerm as string,
+    rentalPlan as string,
+    sortBy as string,
+    sortOrder as string
+  );
 
   res.send({
     data: result,

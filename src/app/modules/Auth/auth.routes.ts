@@ -3,6 +3,10 @@ import {AuthController} from "./auth.controller";
 
 const router = express.Router();
 
+// const auth = (...roles:String[])=>{
+
+// }
+
 // route to login user
 router.post("/auth/login", AuthController.loginUser);
 

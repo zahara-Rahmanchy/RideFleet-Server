@@ -20,6 +20,7 @@ model User{
   role userRoles
   passwordChange Boolean @default(true)
   admin     Admin?
+  renter    Renter?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -36,6 +37,21 @@ model Admin {
   user User @relation(references: [email], fields: [email])
 
   @@map("admins")
+}
+
+model Renter {
+  id            String   @id @unique @default(uuid())
+  email         String   @unique
+  name          String
+  profilePhoto  String?
+  contactNumber String?
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(references: [email], fields: [email])
+
+  @@map("renters")
 }
 enum userRoles{
   SuperAdmin
