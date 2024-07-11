@@ -11,7 +11,7 @@ const insertVehicle = async (req: Request, res: Response) => {
   });
 };
 
-const getVehicle = async (req: Request, res: Response) => {
+const getAllVehicles = async (req: Request, res: Response) => {
   console.log("user controller:", req.body);
   const searchTerm = req.query.searchTerm ? req.query.searchTerm : "";
   const rentalPlan = req.query.rentalPlan ? req.query.rentalPlan : "";
@@ -19,7 +19,7 @@ const getVehicle = async (req: Request, res: Response) => {
   const sortOrder = req.query.sortOrder ? req.query.sortOrder : "asc";
 
   console.log("sortBy con: ", sortBy, "\nsortOrder con: ", sortOrder);
-  const result = await VehicleServies.getVehicleData(
+  const result = await VehicleServies.getVehiclesData(
     searchTerm as string,
     rentalPlan as string,
     sortBy as string,
@@ -30,8 +30,18 @@ const getVehicle = async (req: Request, res: Response) => {
     data: result,
   });
 };
+const getVehicleDetail = async (req: Request, res: Response) => {
+  console.log("vehicle controller:", req.params.id);
+
+  const result = await VehicleServies.getVehicleDetailFromDb(req.params.id);
+
+  res.send({
+    data: result,
+  });
+};
 
 export const VehicleController = {
   insertVehicle,
-  getVehicle,
+  getAllVehicles,
+  getVehicleDetail,
 };

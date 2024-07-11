@@ -6,6 +6,8 @@ const router = express.Router();
 router.post("/vehicle", VehicleController.insertVehicle);
 
 // renter/website visitors can view
-router.get("/vehicles", VehicleController.getVehicle);
+router.get("/vehicles", VehicleController.getAllVehicles);
+
+router.get("/vehicle/:id", VehicleController.getVehicleDetail);
 
 export const VehicleRoutes = router;

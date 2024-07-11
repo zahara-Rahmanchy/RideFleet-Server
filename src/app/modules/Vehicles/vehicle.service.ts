@@ -47,8 +47,8 @@ const insertVehicleData = async (data: any) => {
   return result;
 };
 
-// TODO: Apply filter and pagination
-const getVehicleData = async (
+// TODO: pagination
+const getVehiclesData = async (
   searchTerm: string | null,
   rentalPlan: any,
   sortBy: string,
@@ -81,17 +81,7 @@ const getVehicleData = async (
       ],
     });
   }
-  // if (rentalPlan && rentalPlan !== null) {
-  // allConditionsWithAND.push({
-  //   rent: {
-  //     some: {
-  //       name: {
-  //         equals: rentalPlan,
-  //       },
-  //     },
-  //   },
-  // });
-  // }
+
   const rentWhereClause = rentalPlan
     ? {
         name: {
@@ -120,7 +110,21 @@ const getVehicleData = async (
   console.log("result: ", result);
   return result;
 };
+const getVehicleDetailFromDb = async (id: string) => {
+  const result = await prisma.vehicles.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      rent: true,
+    },
+  });
+
+  console.log("result: ", result);
+  return result;
+};
 export const VehicleServies = {
   insertVehicleData,
-  getVehicleData,
+  getVehiclesData,
+  getVehicleDetailFromDb,
 };
