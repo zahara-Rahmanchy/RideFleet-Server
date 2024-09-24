@@ -1,10 +1,11 @@
 import {Request, Response} from "express";
-import {VehicleServies} from "./vehicle.service";
+import {SortBy, SortOrder, VehicleServices} from "./vehicle.service";
+// import {rentalPlanName} from "@prisma/client";
 
 const insertVehicle = async (req: Request, res: Response) => {
   console.log("user controller:", req.body);
 
-  const result = await VehicleServies.insertVehicleData(req.body);
+  const result = await VehicleServices.insertVehicleData(req.body);
 
   res.send({
     result,
@@ -19,12 +20,14 @@ const getAllVehicles = async (req: Request, res: Response) => {
   const sortOrder = req.query.sortOrder ? req.query.sortOrder : "asc";
 
   console.log("sortBy con: ", sortBy, "\nsortOrder con: ", sortOrder);
-  const result = await VehicleServies.getVehiclesData(
+  const result = await VehicleServices.getVehiclesData(
     searchTerm as string,
-    rentalPlan as string,
-    sortBy as string,
-    sortOrder as string
+    // rentalPlan as string,
+    sortBy as SortBy,
+    sortOrder as SortOrder
   );
+  console.log("req.query: ", req.query);
+  console.dir(result, {depth: null, colors: true});
 
   res.send({
     data: result,
@@ -33,7 +36,7 @@ const getAllVehicles = async (req: Request, res: Response) => {
 const getVehicleDetail = async (req: Request, res: Response) => {
   console.log("vehicle controller:", req.params.id);
 
-  const result = await VehicleServies.getVehicleDetailFromDb(req.params.id);
+  const result = await VehicleServices.getVehicleDetailFromDb(req.params.id);
 
   res.send({
     data: result,

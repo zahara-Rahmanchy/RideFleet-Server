@@ -66,21 +66,31 @@ model Vehicles{
   brand String
   image String
   description String
+  performance String @default("Engine: 3.6L V6, Horsepower: 295, Torque: 260 lb-ft, Transmission: 8-speed automatic, Drivetrain: 4WD")
+  dimensions String @default("Length: 189.8 inches, Width: 76.5 inches, Height: 69.3 inches, Wheelbase: 114.8 inches, Ground Clearance: 8.6 inches")
+  fuelEconomy String @default("City: 19 mpg, Highway: 26 mpg")
+  interior String @default("Seating Capacity: 5, Upholstery: Leather, Infotainment: 8.4-inch touchscreen, Apple CarPlay, Android Auto, Climate Control: Dual-zone automatic climate control")
+  safety String   @default("Airbags: 8, Braking: ABS, EBD, Brake Assist, Assist Features: Adaptive cruise control, Lane departure warning, Blind spot monitoring")
+  additionalFeatures String  @default( "Sunroof, Navigation system, Heated seats, Power tailgate")
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rent RentalPlan[]
+  rentalPlanId    String     @unique  
+  rent RentalPlan @relation(fields: [rentalPlanId], references: [id])
 }
 
 model RentalPlan {
   id String @id @default(uuid())
-  name rentalPlanName
-  description String
-  vehicleId String
+  // name rentalPlanName
+  // description String
+ 
   perDay Float
   perMonth Float
   perWeek Float
-  vehicle Vehicles @relation(fields: [vehicleId],references: [id])
+  // vehicle Vehicles @relation(fields: [vehicleId],references: [id])
   
+
+  Vehicles Vehicles[]
 }
 // model PricingPlan{
 //    id String @id @default(uuid())

@@ -1,7 +1,9 @@
-import {$Enums, Prisma, PrismaClient, rentalPlanName} from "@prisma/client";
+import {$Enums, Prisma, PrismaClient, RentalPlan} from "@prisma/client";
 import {create} from "domain";
 
 const prisma = new PrismaClient();
+export type SortOrder = "asc" | "desc";
+export type SortBy = "perDay" | "perWeek" | "perMonth";
 // const data = {
 //   category: "Car",
 //   brand: "Mercedes-Benz",
@@ -22,20 +24,14 @@ const prisma = new PrismaClient();
 //   ],
 // };
 const insertVehicleData = async (data: any) => {
-  const {rent: rentalPlans, ...vehiclesData} = data;
-  console.log("rent: ", rentalPlans);
-  const rentData = rentalPlans.map((plan: any) => ({
-    name: plan.name as $Enums.rentalPlanName,
-    description: plan.description,
-    perDay: plan.perDay,
-    perMonth: plan.perMonth,
-    perWeek: plan.perWeek,
-  }));
+  const {rent: rentalPlansPrices, ...vehiclesData} = data;
+  console.log("rent: ", rentalPlansPrices, "vehic: ", vehiclesData);
+
   const result = await prisma.vehicles.create({
     data: {
       ...vehiclesData,
       rent: {
-        create: rentData,
+        create: {...rentalPlansPrices},
       },
     },
     include: {
@@ -43,18 +39,18 @@ const insertVehicleData = async (data: any) => {
     },
   });
 
-  console.log("result: ", result);
+  console.log("result: ", "result");
   return result;
 };
 
 // TODO: pagination
 const getVehiclesData = async (
   searchTerm: string | null,
-  rentalPlan: any,
-  sortBy: string,
-  sortOrder: string
+
+  sortBy: SortBy,
+  sortOrder: SortOrder
 ) => {
-  console.log("sortBy: ", sortBy, "\nsortOrder: ", sortOrder);
+  console.log("sortBy in se: ", sortBy, "\nsortOrder in se: ", sortOrder);
   const pageCount = 1;
   const allConditionsWithAND: Prisma.VehiclesWhereInput[] = [];
   if (searchTerm && searchTerm !== null) {
@@ -82,32 +78,37 @@ const getVehiclesData = async (
     });
   }
 
-  const rentWhereClause = rentalPlan
-    ? {
-        name: {
-          equals: rentalPlan,
-        },
-      }
-    : {};
+  // adding some name to match with the rentalPlan name to filter vehicles
+  // allConditionsWithAND.push({
+  //   rent: {
+  //     some: {
+  //       name: rentalPlan, // Filter by rental plan name
+  //     },
+  //   },
+  // });{
+  //   rent: {
+  //     some: {name: rentalPlan},
+  //   },
+  // },
+
   const whereConditions: Prisma.VehiclesWhereInput = {
     AND: allConditionsWithAND,
   };
+  console.dir(whereConditions, {depth: null, colors: true});
   const result = await prisma.vehicles.findMany({
     where: whereConditions,
     include: {
+      rent: true,
+    },
+    orderBy: {
       rent: {
-        where: rentWhereClause,
-        orderBy: {
-          [sortBy]: sortOrder,
-        },
+        [sortBy]: sortOrder,
       },
     },
-
     skip: Number(pageCount - 1) * 9,
     take: Number(9),
   });
 
-  console.log("result: ", result);
   return result;
 };
 const getVehicleDetailFromDb = async (id: string) => {
@@ -123,7 +124,8 @@ const getVehicleDetailFromDb = async (id: string) => {
   console.log("result: ", result);
   return result;
 };
-export const VehicleServies = {
+
+export const VehicleServices = {
   insertVehicleData,
   getVehiclesData,
   getVehicleDetailFromDb,
