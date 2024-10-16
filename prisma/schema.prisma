@@ -52,8 +52,9 @@ model Renter {
   user User @relation(references: [email], fields: [email])
 
   @@map("renters")
+  Bookings Bookings[]
 }
-enum userRoles{
+enum userRoles {
   SuperAdmin
   Admin
   Renter
@@ -71,38 +72,69 @@ model Vehicles{
   fuelEconomy String @default("City: 19 mpg, Highway: 26 mpg")
   interior String @default("Seating Capacity: 5, Upholstery: Leather, Infotainment: 8.4-inch touchscreen, Apple CarPlay, Android Auto, Climate Control: Dual-zone automatic climate control")
   safety String   @default("Airbags: 8, Braking: ABS, EBD, Brake Assist, Assist Features: Adaptive cruise control, Lane departure warning, Blind spot monitoring")
-  additionalFeatures String  @default( "Sunroof, Navigation system, Heated seats, Power tailgate")
+  additionalFeatures String  @default("None")
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rentalPlanId    String     @unique  
-  rent RentalPlan @relation(fields: [rentalPlanId], references: [id])
+  
+  rent  RentalPlan?
+  Bookings Bookings[]
 }
 
 model RentalPlan {
   id String @id @default(uuid())
-  // name rentalPlanName
-  // description String
- 
   perDay Float
   perMonth Float
   perWeek Float
-  // vehicle Vehicles @relation(fields: [vehicleId],references: [id])
-  
-
-  Vehicles Vehicles[]
+  vehicleId String @unique
+  vehicle Vehicles @relation(fields: [vehicleId],references: [id])
 }
-// model PricingPlan{
-//    id String @id @default(uuid())
-//    perDay Float
-//    perMonth Float
-//    perWeek Float
-//    rentalPlanId String
-//    rentPlan RentalPlan @relation(fields: [rentalPlanId],references: [id])
-// }
-enum rentalPlanName{
+
+// one to many relationship with renters-->one renter--> one or more bookings
+model Bookings{
+  id String @id @default(uuid())
+
+  renterId String
+  renter Renter @relation(fields: [renterId],references: [id])
+  vehicleId String
+
+  vehicles Vehicles @relation(fields: [vehicleId],references: [id])
+
+  schedule     Schedule?   // A booking can have one schedule
+  status BookingStatus
+  paymentStatus PaymentStatus  @default(UNPAID)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Schedule {
+  id String @id @default(uuid())
+  start_date DateTime
+  end_date DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookingId  String   @unique // Each booking has one schedule
+  booking    Bookings @relation(fields: [bookingId], references: [id])
+}
+
+
+
+enum rentalPlanName {
   Student
   Standard
   Premium
   
+}
+enum BookingStatus {
+  SCHEDULED
+  INPROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
 }

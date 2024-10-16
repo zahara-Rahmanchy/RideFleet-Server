@@ -6,7 +6,7 @@ const userAdminValidation = z.object({
       required_error: "Password field is required",
     })
     .min(6, "Password should be at least 6 characters!"),
-  admin: z.object({
+  Admin: z.object({
     name: z.string({
       required_error: "Name field is required",
     }),

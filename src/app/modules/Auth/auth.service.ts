@@ -23,15 +23,15 @@ const loginUser = async (payload: {email: string; password: string}) => {
   if (!isCorrectPassword) {
     throw new Error("Password incorrect!");
   }
-  const {id: userId, role, passwordChange} = userData;
+  const {role, passwordChange} = userData;
   const accessToken = jwtHelpers.createToken(
-    {userId, role, email},
+    {role, email},
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
 
   const refreshToken = jwtHelpers.createToken(
-    {userId, role, email},
+    {role, email},
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
   );

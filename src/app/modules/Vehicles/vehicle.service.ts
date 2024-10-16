@@ -46,7 +46,7 @@ const insertVehicleData = async (data: any) => {
 // TODO: pagination
 const getVehiclesData = async (
   searchTerm: string | null,
-
+  category: string | null,
   sortBy: SortBy,
   sortOrder: SortOrder
 ) => {
@@ -78,18 +78,14 @@ const getVehiclesData = async (
     });
   }
 
-  // adding some name to match with the rentalPlan name to filter vehicles
-  // allConditionsWithAND.push({
-  //   rent: {
-  //     some: {
-  //       name: rentalPlan, // Filter by rental plan name
-  //     },
-  //   },
-  // });{
-  //   rent: {
-  //     some: {name: rentalPlan},
-  //   },
-  // },
+  // adding some name to match with the category name to filter vehicles
+  if (category && category !== null) {
+    allConditionsWithAND.push({
+      category: {
+        equals: category,
+      },
+    });
+  }
 
   const whereConditions: Prisma.VehiclesWhereInput = {
     AND: allConditionsWithAND,
