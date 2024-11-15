@@ -23,7 +23,7 @@ const auth = (...roles: string[]) => {
 
       verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
-      req.user = verifiedUser; // role  , userid
+      req.user = verifiedUser as IAuthUser; // role  , userid
 
       // role diye guard korar jnno
       if (roles.length && !roles.includes(verifiedUser.role)) {

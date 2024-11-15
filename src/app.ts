@@ -14,6 +14,7 @@ import {AuthRoutes} from "./app/modules/Auth/auth.routes";
 import {userRoutes} from "./app/modules/User/user.routes";
 import {BookingRoutes} from "./app/modules/Bookings/bookings.routes";
 import {adminRoutes} from "./app/modules/Admin/admin.routes";
+import {Server} from "socket.io";
 
 const app: Application = express();
 
